@@ -20,8 +20,7 @@ test("Single ticket booking is eligible for refund", async ({ page }) => {
 
     //Navigate to booking detail
     await page.getByRole("button", { name: "View My Bookings" }).click();
-    const url = page.url();
-    expect(url).toBe(base_url + "/bookings");
+    await expect(page).toHaveURL(base_url + "/bookings");
     await page.locator("#booking-card button").first().click();
     await expect(page.locator("//h2[text()='Booking Information']")).toBeVisible();
 
@@ -67,8 +66,7 @@ test("Group ticket booking is NOT eligible for refund", async({page})=>{
 
     //Navigate to booking detail
     await page.getByRole("button", { name: "View My Bookings" }).click();
-    const url = page.url();
-    expect(url).toBe(base_url + "/bookings");
+    await expect(page).toHaveURL(base_url + "/bookings");
     await page.locator("#booking-card button").first().click();
     await expect(page.locator("//h2[text()='Booking Information']")).toBeVisible();
 

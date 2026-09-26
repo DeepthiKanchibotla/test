@@ -3,8 +3,8 @@ const { test, expect } = require('@playwright/test');
 
 test('Book an even', async ({ page }) => {
 
-    const base_url="https://eventhub.rahulshettyacademy.com"
-    const titleName='Ganesh Chaturdhi Offer'
+    const base_url = "https://eventhub.rahulshettyacademy.com"
+    const titleName = 'Ganesh Chaturdhi Offer'
     //Login
     await page.goto(base_url);
     await page.getByPlaceholder("you@email.com").fill("deepudeepthi447@gmail.com");
@@ -35,47 +35,47 @@ test('Book an even', async ({ page }) => {
     await page.getByLabel("Price ($)").fill("10");
     await page.getByLabel("Total Seats").fill("1000");
     await page.locator("#add-event-btn").click();
-    expect(await page.getByText("Event Created").isVisible());
+    await expect(page.getByText("Event Created")).toBeVisible();
 
     //Start booking
     await page.locator("a#nav-events").click();
-    const allEvents= page.locator("#event-card");
+    const allEvents = page.locator("#event-card");
     await expect(allEvents.first()).toBeVisible();
-    const seatsBeforeBookingtext=(await allEvents.filter({hasText: titleName}).getByText("seats").innerText());
-    const seatsBeforeBooking= parseInt(seatsBeforeBookingtext.trim());
-    console.log("Seats before booking: "+seatsBeforeBooking);
-    await allEvents.filter({hasText: titleName}).locator('#book-now-btn').click();
+    const seatsBeforeBookingtext = (await allEvents.filter({ hasText: titleName }).getByText("seats").innerText());
+    const seatsBeforeBooking = parseInt(seatsBeforeBookingtext.trim());
+    console.log("Seats before booking: " + seatsBeforeBooking);
+    await allEvents.filter({ hasText: titleName }).locator('#book-now-btn').click();
 
     //Fill booking form
-     expect(await page.locator("#ticket-count").textContent()).toBe("1");
-     await page.getByLabel("Full Name").fill('Deepthi kanchibotla');
-     await page.locator("input#customer-email").fill('deepudeepthi447@gmail.com');
-     await page.getByLabel('Phone Number').fill('9872635493');
-     await page.getByRole('button',{name:'Confirm Booking'}).click();
-     
-     //Verify booking confirmation
+    await expect(page.locator("#ticket-count")).toHaveText("1");
+    await page.getByLabel("Full Name").fill('Deepthi kanchibotla');
+    await page.locator("input#customer-email").fill('deepudeepthi447@gmail.com');
+    await page.getByLabel('Phone Number').fill('9872635493');
+    await page.getByRole('button', { name: 'Confirm Booking' }).click();
 
-     await expect( page.locator(".booking-ref")).toBeVisible();
-     const bookingRef= await  page.locator(".booking-ref").textContent();
-     console.log(bookingRef);
+    //Verify booking confirmation
+
+    await expect(page.locator(".booking-ref")).toBeVisible();
+    const bookingRef = await page.locator(".booking-ref").textContent();
+    console.log(bookingRef);
 
     //Verify in My Bookings
-     await page.getByRole('button',{name:'View My Bookings'}).click();
-     await page.waitForLoadState('networkidle');
-     expect(page.url()).toBe(base_url + '/bookings');
-     const cards=  page.locator("#booking-card");
-     await expect(cards.first()).toBeVisible();
-     await expect(cards.locator("span.booking-ref").filter({hasText : bookingRef})).toBeVisible();
-     const name= await cards.locator(`(//span[text()='${bookingRef}']/../../h3)`).filter({hasText : titleName}).textContent();
-     expect(name).toBe(titleName);
-     
+    await page.getByRole('button', { name: 'View My Bookings' }).click();
+    await expect(page).toHaveURL(base_url + '/bookings');
+    await expect(page.getByRole('heading', { name: 'My Bookings' })).toBeVisible();
+    const cards = page.locator("#booking-card");
+    await expect(cards.first()).toBeVisible();
+    await expect(cards.locator("span.booking-ref").filter({ hasText: bookingRef })).toBeVisible();
+    const name = await cards.locator(`(//span[text()='${bookingRef}']/../../h3)`).filter({ hasText: titleName }).textContent();
+    expect(name).toBe(titleName);
 
-     //Verify seat reduction
-     await page.goto(base_url + '/events');
-     await expect(allEvents.first()).toBeVisible();
-     await expect( allEvents.filter({hasText: titleName})).toBeVisible();
-     const seatsAfterBookingtext= await allEvents.filter({hasText: titleName}).getByText("seats").innerText();
-     const seatsAfterBooking= parseInt(seatsAfterBookingtext.trim());
-     console.log("Seats after booking: "+seatsAfterBooking);
-      expect(seatsAfterBooking).toBe(seatsBeforeBooking - 1);
+
+    //Verify seat reduction
+    await page.goto(base_url + '/events');
+    await expect(allEvents.first()).toBeVisible();
+    await expect(allEvents.filter({ hasText: titleName })).toBeVisible();
+    const seatsAfterBookingtext = await allEvents.filter({ hasText: titleName }).getByText("seats").innerText();
+    const seatsAfterBooking = parseInt(seatsAfterBookingtext.trim());
+    console.log("Seats after booking: " + seatsAfterBooking);
+    expect(seatsAfterBooking).toBe(seatsBeforeBooking - 1);
 })

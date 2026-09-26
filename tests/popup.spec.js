@@ -21,7 +21,7 @@ test('PopUp Validations', async ({ page }) => {
 
     //frame
     const iFrame = page.frameLocator("#courses-iframe");
-    await iFrame.locator("li a[href*='lifetime-access'] : visible").click();
+    await iFrame.locator("li a[href*='lifetime-access']:visible").click();
     const text= await iFrame.locator(".text h2").textContent();
     console.log(text.split(" ")[1]);
 

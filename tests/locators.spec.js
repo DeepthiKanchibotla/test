@@ -6,7 +6,8 @@ test('Locators', async({page})=>{
  
     await page.goto("https://rahulshettyacademy.com/angularpractice/");
     //await page.waitForTimeout(3000);
-    await page.locator("input.ng-touched").first().fill("Deepthi");
+    //await page.locator("input.ng-touched").first().fill("Deepthi");
+    await page.getByLabel("Name").fill("Deepthi");
     await page.locator('[name="email"]').fill("test@gmail.com");
     await page.getByPlaceholder('Password').fill('test@123');
     await page.getByLabel("Gender").selectOption("Female");
